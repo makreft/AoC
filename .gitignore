@@ -1,4 +1,6 @@
 .git/
+a.o
+.vscode/
 .idea/
 cmake-build-debug/
 CMakeLists.txt
