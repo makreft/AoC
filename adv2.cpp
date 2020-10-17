@@ -95,40 +95,33 @@ std::vector <std::vector<int> > inputToIntcodeFormat(std::vector<int> input)
 void add(int index, std::vector<int>& input)
 {
   // intcode = [opcode, position of val1, position of val2, store result to position]
-  int pos1 = input[index+1]; //noun
-  int pos2 = input[index+2]; //verb
+  int pos1 = input[index+1];
+  int pos2 = input[index+2];
   int result = input[pos1] + input[pos2];
   input[input[index + 3]] = result;
 }
 void multiply(int index, std::vector<int>& input)
 {
   // intcode = [opcode, position of val1, position of val2, store result to position]
-  int pos1 = input[index+1]; //noun
-  int pos2 = input[index+2]; //verb
+  int pos1 = input[index+1];
+  int pos2 = input[index+2];
   int result = input[pos1] * input[pos2];
   input[input[index + 3]] = result;
 }
-
-int main () {
-  std::string file_name("adv2_input.txt");
-  std::vector<int> input;
-
-  input = readInputToVector(file_name);
-  int instruction_ptr = 0;
-  for (int i=0; i<input.size(); i+=4)
+void calcIntcode(std::vector<int>&memory)
+{
+  for (int i=0; i<memory.size(); i+=4)
   {
-    int opcode = input[i];
+    int opcode = memory[i];
     if (opcode == 1)
     {
-      add(i, input);
-      instruction_ptr += 4;
+      add(i, memory);
     }
     else if (opcode == 2)
     {
-      multiply(i, input);
-      instruction_ptr += 4;
+      multiply(i, memory);
     }
-    else if (opcode == 99)
+    else if ( opcode == 99 )
     {
       break;
     }
@@ -138,5 +131,31 @@ int main () {
       break;
     }
   }
-  std::cout << input[0] << std::endl;
+}
+
+int main () {
+  std::string file_name("adv2_input.txt");
+  std::vector<int> input; // input = initial memory of intcode computer
+
+  input = readInputToVector(file_name);
+  int instruction_ptr = 0;
+
+  std::vector<int> memory(input);
+  for (int noun=0; noun < 100; ++noun)
+  {
+    for (int verb=0; verb < 100; ++verb)
+    {
+      memory = input;
+      memory[1] = noun;
+      memory[2] = verb;
+      calcIntcode(memory);
+      if ( memory[0] == 19690720 )
+      {
+        std::cout << "Noun: " << noun << " Verb: " << verb << std::endl;
+        return 0;
+      }
+    }
+  }
+
+  std::cout << memory[0] << std::endl;
 }
