@@ -64,7 +64,7 @@ int main () {
     std::vector<int> mass;
     std::vector<int> result;
 
-    mass=readInputToVector("adv_input.txt");
+    mass=readInputToVector("adv1_input.txt");
     calcFuel(mass, result);
     int total = 0;
 

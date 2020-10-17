@@ -4,9 +4,18 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <sstream>
 #include <vector>
 #include <cmath>
 
+void getNumberFromString(std::string str, std::vector<int>& vect) {
+std::stringstream ss(str);
+    for (int i; ss >> i;) {
+        vect.push_back(i);    
+        if (ss.peek() == ',')
+            ss.ignore();
+    }
+}
 
 std::vector<int> readInputToVector(std::string fileName)
 {
@@ -21,8 +30,7 @@ std::vector<int> readInputToVector(std::string fileName)
       {
         if(line.length())
         {
-          int inNumber = std::stoi(line);
-          inNumbers.push_back(inNumber);
+          getNumberFromString(line, inNumbers);
         }
       }
       inFile.close();
@@ -41,14 +49,14 @@ int calcFuelForMass(int mass)
 
 void calcFuel(std::vector<int>& mass, std::vector<int>& fuel)
 {
-    std::queue<int> q;
-    for (int i=0; i < mass.size(); ++i)
-    {
-      q.push(mass[i]);
-    }
-    std::cout << "im here" << std::endl;
-// 142195
-while (!q.empty())
+  std::queue<int> q;
+  for (int i=0; i < mass.size(); ++i)
+  {
+    q.push(mass[i]);
+  }
+  std::cout << "im here" << std::endl;
+
+  while (!q.empty())
   {
     int current_fuel(calcFuelForMass(q.front()));
     if ( current_fuel > 0)
@@ -60,19 +68,77 @@ while (!q.empty())
   }
 }
 
-int main () {
-    std::vector<int> mass;
-    std::vector<int> result;
+std::vector <std::vector<int> > inputToIntcodeFormat(std::vector<int> input)
+{
+  std::vector <std::vector<int> > formatted;
+  std::vector<int> intcode;
 
-    mass=readInputToVector("adv_input.txt");
-    calcFuel(mass, result);
-    int total = 0;
+  int op_len=0;
 
-    for (int i=0; i < result.size(); ++i) 
+  for (int i=0; i < input.size(); ++i)
+  {
+    if (op_len < 4)
     {
-      total += result[i];
+      intcode.push_back(input[i]);
+      op_len++;
     }
+    else
+    {
+      formatted.push_back(intcode);
+      op_len=0;
+      intcode.clear();
+    }
+  }
+  return formatted;
+}
 
-    std::cout << "Das Ergebnis ist " << total << std::endl;
-    return 0;
+void add(int index, std::vector<int>& input)
+{
+  // intcode = [opcode, position of val1, position of val2, store result to position]
+  int pos1 = input[index+1];
+  int pos2 = input[index+2];
+  int result = input[pos1] + input[pos2];
+  input[input[index + 3]] = result;
+}
+void multiply(int index, std::vector<int>& input)
+{
+  // intcode = [opcode, position of val1, position of val2, store result to position]
+  int pos1 = input[index+1];
+  int pos2 = input[index+2];
+  int result = input[pos1] * input[pos2];
+  input[input[index + 3]] = result;
+}
+
+int main () {
+  std::string file_name("adv2_input.txt");
+  std::vector<int> input;
+
+  input = readInputToVector(file_name);
+  for (int i=0; i<input.size(); i+=4)
+  {
+    int opcode = input[i];
+    if (opcode == 1)
+    {
+      add(i, input);
+    }
+    else if (opcode == 2)
+    {
+      multiply(i, input);
+    }
+    else if (opcode == 99)
+    {
+      break;
+    }
+    else
+    {
+      std::cout << "unexpected opcode" << std::endl;
+      break;
+    }
+  }
+  std::cout << input[0] << std::endl;
+  std::cout << input[1] << std::endl;
+  std::cout << input[2] << std::endl;
+  std::cout << input[3] << std::endl;
+  std::cout << input[4] << std::endl;
+  std::cout << input[5] << std::endl;
 }
