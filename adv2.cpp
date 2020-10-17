@@ -95,16 +95,16 @@ std::vector <std::vector<int> > inputToIntcodeFormat(std::vector<int> input)
 void add(int index, std::vector<int>& input)
 {
   // intcode = [opcode, position of val1, position of val2, store result to position]
-  int pos1 = input[index+1];
-  int pos2 = input[index+2];
+  int pos1 = input[index+1]; //noun
+  int pos2 = input[index+2]; //verb
   int result = input[pos1] + input[pos2];
   input[input[index + 3]] = result;
 }
 void multiply(int index, std::vector<int>& input)
 {
   // intcode = [opcode, position of val1, position of val2, store result to position]
-  int pos1 = input[index+1];
-  int pos2 = input[index+2];
+  int pos1 = input[index+1]; //noun
+  int pos2 = input[index+2]; //verb
   int result = input[pos1] * input[pos2];
   input[input[index + 3]] = result;
 }
@@ -114,16 +114,19 @@ int main () {
   std::vector<int> input;
 
   input = readInputToVector(file_name);
+  int instruction_ptr = 0;
   for (int i=0; i<input.size(); i+=4)
   {
     int opcode = input[i];
     if (opcode == 1)
     {
       add(i, input);
+      instruction_ptr += 4;
     }
     else if (opcode == 2)
     {
       multiply(i, input);
+      instruction_ptr += 4;
     }
     else if (opcode == 99)
     {
