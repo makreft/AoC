@@ -136,9 +136,4 @@ int main () {
     }
   }
   std::cout << input[0] << std::endl;
-  std::cout << input[1] << std::endl;
-  std::cout << input[2] << std::endl;
-  std::cout << input[3] << std::endl;
-  std::cout << input[4] << std::endl;
-  std::cout << input[5] << std::endl;
 }
