@@ -3,10 +3,8 @@ a.o
 .vscode/
 .idea/
 cmake-build-debug/
-CMakeLists.txt
-adv_input.txt
 adv2
-adv2.dSYM
+adv3
 .gitignore.swp
-adv2_input.txt
-adv1_input.txt
+*.txt
+*.dSYM
